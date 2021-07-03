@@ -16,8 +16,7 @@ public class PageExposeFunctionExample {
     public static void main(String[] args) throws Exception {
         ArrayList<String> arrayList = new ArrayList<>();
 
-        LaunchOptions options = new LaunchOptionsBuilder().withArgs(arrayList).withHeadless(false)/*.withExecutablePath(path)*/.withDumpio(true)
-                .withExecutablePath("C:/Users/Administrator/AppData/Local/Google/Chrome/Application/chrome.exe").build();
+        LaunchOptions options = new LaunchOptionsBuilder().withArgs(arrayList).withHeadless(false)/*.withExecutablePath(path)*/.withDumpio(true).build();
         arrayList.add("--no-sandbox");
         arrayList.add("--disable-setuid-sandbox");
         Browser browser = Puppeteer.launch(options);
