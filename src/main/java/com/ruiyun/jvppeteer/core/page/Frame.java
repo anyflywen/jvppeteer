@@ -94,6 +94,9 @@ public class Frame {
         return this.mainWorld.evaluateHandle(pageFunction, args);
     }
 
+    public Object evaluate(String pageFunction, PageEvaluateType type, List<Object>args) {
+        return this.mainWorld.evaluate(pageFunction, type, args);
+    }
     public Object evaluate(String pageFunction, List<Object>args) {
         return this.mainWorld.evaluate(pageFunction, args);
     }

@@ -199,30 +199,42 @@ public class Request {
      */
     public JsonNode continueRequest(String url, String method, String postData, Map<String, String> headers) {
         // Request interception is not supported for data: urls.
-        if (url().startsWith("data:"))
-            return null;
 
         ValidateUtil.assertArg(isAllowInterception(), "Request Interception is not enabled!");
         ValidateUtil.assertArg(!isInterceptionHandled(), "Request is already handled!");
 
+        return request(url, method, postData, headers);
+    }
+
+    private JsonNode request(String url, String method, String postData, Map<String, String> headers) {
+        if (url().startsWith("data:"))
+            return null;
         setInterceptionHandled(true);
         Map<String, Object> params = new HashMap<>();
         params.put("requestId", interceptionId());
 
-        if(StringUtil.isNotEmpty(url)) {
+        if (StringUtil.isNotEmpty(url)) {
             params.put("url", url);
         }
-        if(StringUtil.isNotEmpty(method)) {
+        if (StringUtil.isNotEmpty(method)) {
             params.put("method", method);
         }
-        if(StringUtil.isNotEmpty(postData)){
-            params.put("postData", new String(Base64.getEncoder().encode(postData.getBytes()),StandardCharsets.UTF_8));
+        if (StringUtil.isNotEmpty(postData)) {
+            params.put("postData", new String(Base64.getEncoder().encode(postData.getBytes()), StandardCharsets.UTF_8));
         }
 
         if (headers != null && headers.size() > 0) {
             params.put("headers", headersArray(headers));
         }
         return client.send("Fetch.continueRequest", params, true);
+    }
+    @Deprecated
+    public JsonNode newRequest(String url, String method, String postData, Map<String, String> headers) {
+        // Request interception is not supported for data: urls.
+        if (interceptionId == null) {
+            interceptionId = System.currentTimeMillis() + "";
+        }
+        return request(url, method, postData, headers);
     }
 
     /**

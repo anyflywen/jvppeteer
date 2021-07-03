@@ -1513,6 +1513,9 @@ public class Page extends EventEmitter {
      * @throws InterruptedException 异常
      */
     public void exposeFunction(String name, Function<List<?>, Object> puppeteerFunction) throws InterruptedException, ExecutionException {
+        exposeFunction(name, puppeteerFunction, null);
+    }
+    public void exposeFunction(String name, Function<List<?>, Object> puppeteerFunction, PageEvaluateType type) throws InterruptedException, ExecutionException {
         if (this.pageBindings.containsKey(name)) {
             throw new IllegalArgumentException(MessageFormat.format("Failed to add page binding with name {0}: window['{1}'] already exists!", name, name));
         }
@@ -1530,7 +1533,7 @@ public class Page extends EventEmitter {
         }
 
         CompletionService completionService = Helper.completionService();
-        frames.forEach(frame -> completionService.submit(() -> frame.evaluate(expression,null)));
+        frames.forEach(frame -> completionService.submit(() -> frame.evaluate(expression, type,null)));
         for (int i = 0; i < frames.size(); i++) {
             completionService.take().get();
         }
@@ -1889,6 +1892,9 @@ public class Page extends EventEmitter {
     public Object evaluate(String pageFunction) {
         return this.evaluate(pageFunction, new ArrayList<>());
     }
+    public Object evaluate(String pageFunction, PageEvaluateType type) {
+        return this.evaluate(pageFunction, type, new ArrayList<>());
+    }
 
     /**
      * 执行一段 JavaScript代码
@@ -1898,6 +1904,9 @@ public class Page extends EventEmitter {
      */
     public Object evaluate(String pageFunction,List<Object> args) {
         return this.mainFrame().evaluate(pageFunction, args);
+    }
+    public Object evaluate(String pageFunction, PageEvaluateType type,List<Object> args) {
+        return this.mainFrame().evaluate(pageFunction, type, args);
     }
 
 

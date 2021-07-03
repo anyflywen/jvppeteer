@@ -16,7 +16,8 @@ public class PageExposeFunctionExample {
     public static void main(String[] args) throws Exception {
         ArrayList<String> arrayList = new ArrayList<>();
 
-        LaunchOptions options = new LaunchOptionsBuilder().withArgs(arrayList).withHeadless(false)/*.withExecutablePath(path)*/.withDumpio(true).build();
+        LaunchOptions options = new LaunchOptionsBuilder().withArgs(arrayList).withHeadless(false)/*.withExecutablePath(path)*/.withDumpio(true)
+                .withExecutablePath("C:/Users/Administrator/AppData/Local/Google/Chrome/Application/chrome.exe").build();
         arrayList.add("--no-sandbox");
         arrayList.add("--disable-setuid-sandbox");
         Browser browser = Puppeteer.launch(options);
@@ -28,7 +29,7 @@ public class PageExposeFunctionExample {
             AtomicReference<String> result= new AtomicReference<>("");
             text.forEach(arg -> result.updateAndGet(v -> v + arg));
             return getMD5(result.get());
-        });
+        }, PageEvaluateType.STRING);
         page.evaluate("async () => {\n" +
                 "    // use window.md5 to compute hashes\n" +
                 "    const myString = 'PUPPETEER';\n" +

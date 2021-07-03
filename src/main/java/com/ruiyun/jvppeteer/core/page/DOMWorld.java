@@ -129,6 +129,10 @@ public class DOMWorld {
         return (JSHandle) context.evaluateHandle(pageFunction, args);
     }
 
+    public Object evaluate(String pageFunction, PageEvaluateType type, List<Object> args) {
+        ExecutionContext context = this.executionContext();
+        return context.evaluate(pageFunction, type, args);
+    }
     public Object evaluate(String pageFunction, List<Object> args) {
         ExecutionContext context = this.executionContext();
         return context.evaluate(pageFunction, args);

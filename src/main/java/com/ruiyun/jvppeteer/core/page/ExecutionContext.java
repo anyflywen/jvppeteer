@@ -62,14 +62,20 @@ public class ExecutionContext {
     }
 
     public Object evaluateHandle(String pageFunction, List<Object> args) {
-        return this.evaluateInternal(false, pageFunction, Helper.isFunction(pageFunction) ? PageEvaluateType.FUNCTION : PageEvaluateType.STRING, args);
+        return this.evaluateInternal(false, pageFunction, null, args);
     }
 
     public Object evaluate(String pageFunction,  List<Object> args) {
-        return this.evaluateInternal(true, pageFunction,Helper.isFunction(pageFunction) ? PageEvaluateType.FUNCTION : PageEvaluateType.STRING, args);
+        return evaluate(pageFunction, null, args);
+    }
+    public Object evaluate(String pageFunction, PageEvaluateType type,  List<Object> args) {
+        return this.evaluateInternal(true, pageFunction, type, args);
     }
 
     private Object evaluateInternal(boolean returnByValue, String pageFunction, PageEvaluateType type, List<Object> args) {
+        if (type == null) {
+            type = Helper.isFunction(pageFunction) ? PageEvaluateType.FUNCTION : PageEvaluateType.STRING;
+        }
         String suffix = "//# sourceURL=" + ExecutionContext.EVALUATION_SCRIPT_URL;
         if (PageEvaluateType.STRING.equals(type)) {
             int contextId = this.contextId;
