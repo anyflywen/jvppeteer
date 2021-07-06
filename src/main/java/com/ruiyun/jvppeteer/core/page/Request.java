@@ -253,6 +253,29 @@ public class Request {
      * @return Future
      */
     public JsonNode respond(int status, Map<String, String> headers, String contentType, String body) {
+        Map<String, String> responseHeaders = new HashMap<>();
+
+        if (headers != null && headers.size() > 0) {
+            for (Map.Entry<String, String> entry : headers.entrySet())
+                responseHeaders.put(entry.getKey().toLowerCase(), entry.getValue());
+        }
+
+        if (StringUtil.isNotEmpty(contentType)){
+            responseHeaders.put("content-type", contentType);
+        }
+
+        /*if (!responseHeaders.containsKey("content-length")){
+            byte[] responseBody = null;
+            if (StringUtil.isNotEmpty(body)) {
+                responseBody = body.getBytes(StandardCharsets.UTF_8);
+            }
+            if (responseBody != null) {
+                responseHeaders.put("content-length", String.valueOf(responseBody.length));
+            }
+        }*/
+        return respond(status, headersArray(responseHeaders), contentType, body, false);
+    }
+    public JsonNode respond(int status, List<HeaderEntry> headerList, String contentType, String body, boolean decoder) {
         // Mocking responses for dataURL requests is not currently supported.
         if (url().startsWith("data:"))
             return null;
@@ -265,28 +288,20 @@ public class Request {
         if (StringUtil.isNotEmpty(body)) {
             responseBody = body.getBytes(StandardCharsets.UTF_8);
         }
-        Map<String, String> responseHeaders = new HashMap<>();
 
-        if (headers != null && headers.size() > 0) {
-            for (Map.Entry<String, String> entry : headers.entrySet())
-                responseHeaders.put(entry.getKey().toLowerCase(), entry.getValue());
-        }
-
-        if (StringUtil.isNotEmpty(contentType)){
-            responseHeaders.put("content-type", contentType);
-        }
-
-        if (responseBody != null && !responseHeaders.containsKey("content-length")){
-            responseHeaders.put("content-length", String.valueOf(responseBody.length));
-        }
 
         Map<String, Object> params = new HashMap<>();
         params.put("requestId", interceptionId);
         params.put("responseCode", status);
         params.put("responsePhrase", STATUS_TEXTS.get(status));
-        params.put("responseHeaders", headersArray(responseHeaders));
+        params.put("responseHeaders", headerList);
+
         if (responseBody != null) {
-            params.put("body", Base64.getDecoder().decode(responseBody));
+            if (decoder) {
+                responseBody = Base64.getDecoder().decode(responseBody);
+            }
+            headerList.add(new HeaderEntry("content-length", String.valueOf(responseBody.length)));
+            params.put("body", responseBody);
         }
         return client.send("Fetch.fulfillRequest", params, true);
     }
