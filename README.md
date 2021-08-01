@@ -1,3 +1,10 @@
+## 新增功能
+- 可以任意模拟请求
+- 可以不用关闭Browse任意切换代理
+- 修复若干Bug
+- 优化部分监听和性能
+- 降低部分反爬机率
+
 # Jvppeteer
 <p align = "left">
 <a rel="nofollow" href="https://download-chromium.appspot.com/"><img src ="https://img.shields.io/badge/chromium%20download-latest-blue"  alt="下载最新版本的chromuim" style="max-width:100%;"></a> <a><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.fanyong920/jvppeteer"></a> <a href="https://github.com/fanyong920/jvppeteer/issues"><img alt="Issue resolution status" src="https://img.shields.io/github/issues/fanyong920/jvppeteer" style="max-width:100%;"></a>
